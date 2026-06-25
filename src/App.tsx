@@ -231,7 +231,7 @@ export default function App() {
       <header className="border-b border-linen bg-cream py-6 px-4 md:px-8">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-center sm:text-left">
-            <a href="https://rlbdesigns.com" target="_blank" rel="noopener noreferrer" className="inline-block group">
+            <a href="https://www.rlbdesigns.com" target="_blank" rel="noopener noreferrer" className="inline-block group">
               <h1 className="font-serif font-black text-3xl md:text-4xl text-espresso tracking-tight group-hover:text-sage transition-colors">
                 RLB DESIGNS
               </h1>
@@ -240,7 +240,7 @@ export default function App() {
           </div>
           
           <div className="flex items-center gap-3">
-            <a href="https://rlbdesigns.com" target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-sage hover:underline flex items-center gap-1">
+            <a href="https://www.rlbdesigns.com" target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-sage hover:underline flex items-center gap-1">
               rlbdesigns.com <ExternalLink className="w-3 h-3" />
             </a>
             {showSetupButton && (
@@ -1338,7 +1338,7 @@ export default function App() {
                                     return (
                                       <p key={i} className="mb-2">
                                         Rachel Baldwin was diagnosed with Alpha-Gal Syndrome herself... check her main website at{' '}
-                                        <a href="https://rlbdesigns.com" target="_blank" rel="noopener noreferrer" className="text-sage font-bold hover:underline">
+                                        <a href="https://www.rlbdesigns.com" target="_blank" rel="noopener noreferrer" className="text-sage font-bold hover:underline">
                                           rlbdesigns.com <ExternalLink className="w-3.5 h-3.5 inline" />
                                         </a>.
                                       </p>

@@ -1,0 +1,6 @@
+{
+  "name": "RLB Contact Hub",
+  "description": "A beautifully crafted, cozy, and automated contact and support center for RLB Designs. Easily report app issues, ask about book series, send suggestions, and find quick answers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

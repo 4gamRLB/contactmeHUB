@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle, Inbox, ShieldCheck, Clock, Award, ArrowRight, Sparkles } from 'lucide-react';
+import { CheckCircle, Inbox, ShieldCheck, Clock, Award, ArrowRight, Sparkles, ExternalLink } from 'lucide-react';
 
 interface FormSuccessModalProps {
   formType: string;
@@ -72,12 +72,22 @@ export default function FormSuccessModal({ formType, userEmail, onClose }: FormS
         </p>
       </div>
 
-      <button
-        onClick={onClose}
-        className="px-6 py-2.5 bg-sage hover:bg-sage-dark text-white rounded-lg font-bold text-sm cursor-pointer transition-colors inline-flex items-center gap-1.5"
-      >
-        Go Back to Help Hub <ArrowRight className="w-4 h-4" />
-      </button>
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
+        <a
+          href="https://www.rlbdesigns.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full sm:w-auto px-6 py-3 bg-[#C5A059] hover:bg-[#B38F48] text-white rounded-xl font-bold text-sm transition-colors inline-flex items-center justify-center gap-2 shadow-sm"
+        >
+          Return to rlbdesigns.com <ExternalLink className="w-4 h-4" />
+        </a>
+        <button
+          onClick={onClose}
+          className="w-full sm:w-auto px-6 py-3 bg-[#EFECE6] hover:bg-[#E5E0D5] text-[#2D241E] border border-[#DDD8CE] rounded-xl font-bold text-sm cursor-pointer transition-colors inline-flex items-center justify-center gap-1.5"
+        >
+          Submit Another Request
+        </button>
+      </div>
     </div>
   );
 }

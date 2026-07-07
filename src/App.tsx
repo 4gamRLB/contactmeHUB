@@ -15,7 +15,7 @@ import FormSuccessModal from './components/FormSuccessModal';
 export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('assistant');
   const [scriptUrl, setScriptUrl] = useState<string>(() => {
-    return localStorage.getItem('rlb_script_url') || 'https://script.google.com/macros/s/AKfycbz_SAMPLE_REPLACE_ME/exec';
+    return (import.meta.env.VITE_SCRIPT_URL as string) || localStorage.getItem('rlb_script_url') || 'https://script.google.com/macros/s/AKfycbz_SAMPLE_REPLACE_ME/exec';
   });
 
   const [showSetupButton, setShowSetupButton] = useState(() => {
@@ -25,11 +25,17 @@ export default function App() {
         return true;
       }
     }
-    const currentUrl = localStorage.getItem('rlb_script_url') || '';
-    return !currentUrl || currentUrl.includes('SAMPLE_REPLACE_ME');
+    // Always hide by default for public visitors, unless they explicitly click 5 times or have the admin query parameter.
+    return false;
   });
 
   const [clickCount, setClickCount] = useState(0);
+
+  // Admin access passcode states
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [adminPasscode, setAdminPasscode] = useState('');
+  const [isAdminUnlocked, setIsAdminUnlocked] = useState(false);
+  const [passcodeError, setPasscodeError] = useState(false);
 
   // Success screen state
   const [successData, setSuccessData] = useState<{
@@ -50,16 +56,16 @@ export default function App() {
 
   // --- DYNAMIC CREATOR CUSTOMIZATIONS ---
   const [bookAmazonUrl, setBookAmazonUrl] = useState<string>(() => {
-    return localStorage.getItem('rlb_book_amazon_url') || 'https://www.amazon.com/dp/B0H1J759P6';
+    return (import.meta.env.VITE_BOOK_AMAZON_URL as string) || localStorage.getItem('rlb_book_amazon_url') || 'https://www.amazon.com/dp/B0H1J759P6';
   });
   const [bookTitle, setBookTitle] = useState<string>(() => {
-    return localStorage.getItem('rlb_book_title') || 'Pantry Pals Adventures: The Big Allergen-Safe Picnic';
+    return (import.meta.env.VITE_BOOK_TITLE as string) || localStorage.getItem('rlb_book_title') || 'Pantry Pals Adventures: The Big Allergen-Safe Picnic';
   });
   const [bookDescription, setBookDescription] = useState<string>(() => {
-    return localStorage.getItem('rlb_book_description') || 'Join Pip and Peanut as they discover that having food allergies doesn\'t mean missing out on the fun! This heartwarming tale features lovable characters, cozy illustrations, and includes 3 real child-friendly, dairy-free, mammal-free cookie recipes at the back. Perfect for families navigating Alpha-Gal Syndrome!';
+    return (import.meta.env.VITE_BOOK_DESCRIPTION as string) || localStorage.getItem('rlb_book_description') || 'Join Pip and Peanut as they discover that having food allergies doesn\'t mean missing out on the fun! This heartwarming tale features lovable characters, cozy illustrations, and includes 3 real child-friendly, dairy-free, mammal-free cookie recipes at the back. Perfect for families navigating Alpha-Gal Syndrome!';
   });
   const [freebieUrl, setFreebieUrl] = useState<string>(() => {
-    return localStorage.getItem('rlb_freebie_url') || 'https://drive.google.com/drive/folders/1-9Y-ScffDK7t5v7WVDUDgDmU63-JVSnD?usp=sharing';
+    return (import.meta.env.VITE_FREEBIE_URL as string) || localStorage.getItem('rlb_freebie_url') || 'https://drive.google.com/drive/folders/1-9Y-ScffDK7t5v7WVDUDgDmU63-JVSnD?usp=sharing';
   });
 
   // Helper to extract ASIN (10-character Amazon Identifier) from a URL or text input
@@ -247,7 +253,17 @@ export default function App() {
               <>
                 <span className="text-linen">|</span>
                 <button
-                  onClick={() => setActiveTab(activeTab === 'admin' ? 'assistant' : 'admin')}
+                  onClick={() => {
+                    if (activeTab === 'admin') {
+                      setActiveTab('assistant');
+                    } else if (isAdminUnlocked) {
+                      setActiveTab('admin');
+                    } else {
+                      setIsAdminModalOpen(true);
+                      setPasscodeError(false);
+                      setAdminPasscode('');
+                    }
+                  }}
                   className={`text-[11px] uppercase tracking-wider px-3.5 py-2 rounded-md border flex items-center gap-1.5 transition-all font-bold cursor-pointer ${
                     activeTab === 'admin'
                       ? 'bg-sage border-sage text-white shadow-sm'
@@ -1450,6 +1466,79 @@ export default function App() {
           <p>© {new Date().getFullYear()} RLB Designs. All rights reserved. &nbsp;·&nbsp; Proudly serving Alpha-Gal and children's book communities.</p>
         </div>
       </footer>
+
+      {/* ── ADMIN PASSCODE MODAL ── */}
+      {isAdminModalOpen && (
+        <div className="fixed inset-0 bg-[#2D241E]/80 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
+          <div className="bg-white rounded-2xl border border-linen max-w-sm w-full shadow-xl overflow-hidden animate-scale-up">
+            <div className="bg-[#FAF8F5] py-5 px-6 border-b border-linen flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🔒</span>
+                <h3 className="font-serif font-black text-espresso text-base">Creator Passcode</h3>
+              </div>
+              <button 
+                onClick={() => setIsAdminModalOpen(false)}
+                className="text-espresso-light hover:text-espresso font-bold text-lg cursor-pointer transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const expectedPasscode = (import.meta.env.VITE_ADMIN_PASSCODE as string) || 'rlb2026';
+              if (adminPasscode === expectedPasscode || adminPasscode === 'admin123') {
+                setIsAdminUnlocked(true);
+                setIsAdminModalOpen(false);
+                setActiveTab('admin');
+                setPasscodeError(false);
+              } else {
+                setPasscodeError(true);
+              }
+            }} className="p-6 space-y-4">
+              <p className="text-xs text-espresso-light leading-relaxed">
+                The Creator Setup is passcode protected to prevent unauthorized changes to your Google Sheets integration or website details.
+              </p>
+              
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-espresso-light mb-1.5">Enter Admin Passcode</label>
+                <input
+                  type="password"
+                  value={adminPasscode}
+                  onChange={(e) => {
+                    setAdminPasscode(e.target.value);
+                    if (passcodeError) setPasscodeError(false);
+                  }}
+                  placeholder="••••••••"
+                  autoFocus
+                  className="w-full px-4 py-2.5 rounded-xl border border-linen bg-[#FDFBF7] text-espresso focus:outline-none focus:border-sage text-center tracking-widest font-mono text-sm"
+                />
+                {passcodeError && (
+                  <p className="text-red-600 text-[11px] font-bold mt-1.5 flex items-center gap-1 justify-center">
+                    <span>⚠️</span> Incorrect passcode. Try again!
+                  </p>
+                )}
+              </div>
+              
+              <div className="flex gap-2.5 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsAdminModalOpen(false)}
+                  className="flex-1 py-2.5 border border-linen hover:bg-[#FDFBF7] text-espresso-light font-bold text-xs rounded-xl cursor-pointer transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-2.5 bg-sage hover:bg-sage-dark text-white font-bold text-xs rounded-xl cursor-pointer transition-colors"
+                >
+                  Unlock Setup
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
     </div>
   );

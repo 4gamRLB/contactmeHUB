@@ -107,6 +107,9 @@ export default function App() {
   const [collabForm, setCollabForm] = useState(() => getDraft('collab', {
     name: '', email: '', website: '', inquiryType: '', proposal: '', audienceSize: ''
   }));
+  const [testerForm, setTesterForm] = useState(() => getDraft('tester', {
+    name: '', email: '', appInterest: '', comments: ''
+  }));
 
   // Track draft load badges
   const [restoredBadges, setRestoredBadges] = useState<Record<string, boolean>>({});
@@ -139,6 +142,9 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('rlb_draft_collab', JSON.stringify(collabForm));
   }, [collabForm]);
+  useEffect(() => {
+    localStorage.setItem('rlb_draft_tester', JSON.stringify(testerForm));
+  }, [testerForm]);
 
   // Handle saving the Script URL from Setup panel
   const handleSaveScriptUrl = (url: string) => {
@@ -345,6 +351,7 @@ export default function App() {
                     { id: 'assistant', label: 'Welcome Concierge', icon: '🌸' },
                     { id: 'app', label: 'Report an App Bug', icon: '🐛' },
                     { id: 'books', label: 'Ask Book Question', icon: '📚' },
+                    { id: 'tester', label: 'Become an App Tester', icon: '🧪' },
                     { id: 'feedback', label: 'Share Feedback', icon: '💬' },
                     { id: 'suggest', label: 'Suggest an Idea', icon: '💡' },
                     { id: 'collab', label: 'Work Together', icon: '🤝' },
@@ -392,6 +399,7 @@ export default function App() {
                     { id: 'assistant', label: 'Welcome', icon: '🌸' },
                     { id: 'app', label: 'Bug Report', icon: '🐛' },
                     { id: 'books', label: 'Book Help', icon: '📚' },
+                    { id: 'tester', label: 'Test Apps', icon: '🧪' },
                     { id: 'feedback', label: 'Feedback', icon: '💬' },
                     { id: 'suggest', label: 'Suggest Idea', icon: '💡' },
                     { id: 'collab', label: 'Collab', icon: '🤝' },
@@ -1271,6 +1279,150 @@ export default function App() {
                     </div>
 
                   </form>
+                </div>
+              )}
+
+              {/* TAB: BECOME AN APP TESTER */}
+              {activeTab === 'tester' && (
+                <div className="bg-white rounded-2xl border border-[#F4EFE6] shadow-sm p-6 md:p-8 animate-fade-in">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-2xl">🧪</span>
+                    <h2 className="font-serif text-2xl text-[#2D241E]">Sign up to be an App Tester</h2>
+                  </div>
+                  <p className="text-sm text-[#7B7068] leading-relaxed mb-6 border-l-2 border-sage pl-3">
+                    Be the first to explore, experiment, and play with our brand-new tools! Help us perfect our helper assistants, creative toolkits, and launchpads before they go public.
+                  </p>
+
+                  <form onSubmit={(e) => {
+                    e.preventDefault();
+                    submitToGoogleSheets(testerForm, 'App Tester Sign-up', testerForm.email, () => {
+                      clearDraft('tester', { name: '', email: '', appInterest: '', comments: '' }, setTesterForm);
+                    });
+                  }} className="space-y-5">
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-bold text-[#7B7068] uppercase tracking-wider">Your Name <span className="text-blush">*</span></label>
+                        <input
+                          type="text"
+                          required
+                          value={testerForm.name}
+                          onChange={(e) => setTesterForm({ ...testerForm, name: e.target.value })}
+                          placeholder="Your full name"
+                          className="px-4 py-2 rounded-lg border border-[#F4EFE6] focus:border-sage focus:outline-none text-sm bg-white text-[#2D241E]"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-bold text-[#7B7068] uppercase tracking-wider">Your Email <span className="text-blush">*</span></label>
+                        <input
+                          type="email"
+                          required
+                          value={testerForm.email}
+                          onChange={(e) => setTesterForm({ ...testerForm, email: e.target.value })}
+                          placeholder="your.email@example.com"
+                          className="px-4 py-2 rounded-lg border border-[#F4EFE6] focus:border-sage focus:outline-none text-sm bg-white text-[#2D241E]"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-xs font-bold text-[#7B7068] uppercase tracking-wider">Select the App you want to test <span className="text-blush">*</span></label>
+                      <select
+                        required
+                        value={testerForm.appInterest}
+                        onChange={(e) => setTesterForm({ ...testerForm, appInterest: e.target.value })}
+                        className="px-4 py-2 rounded-lg border border-[#F4EFE6] focus:border-sage focus:outline-none text-sm bg-white text-[#2D241E]"
+                      >
+                        <option value="">— Select an App to Test —</option>
+                        <option value="Character Bible">Character Bible</option>
+                        <option value="Coloring Book Launchpad">Coloring Book Launchpad</option>
+                        <option value="Cookbook creator Toolkit">Cookbook creator Toolkit</option>
+                        <option value="KDP . Studio">KDP . Studio</option>
+                        <option value="All of the above">All of the above</option>
+                      </select>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-xs font-bold text-[#7B7068] uppercase tracking-wider">Tell us anything else you'd like us to know (Optional)</label>
+                      <textarea
+                        rows={4}
+                        value={testerForm.comments}
+                        onChange={(e) => setTesterForm({ ...testerForm, comments: e.target.value })}
+                        placeholder="Share your interest in testing, devices you use, or anything else you'd like to tell us!"
+                        className="px-4 py-2 rounded-lg border border-[#F4EFE6] focus:border-sage focus:outline-none text-sm bg-white text-[#2D241E] leading-relaxed"
+                      />
+                    </div>
+
+                    <div className="pt-4 border-t border-[#F4EFE6] flex items-center justify-between flex-wrap gap-4">
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="px-6 py-3 bg-sage hover:bg-sage-dark text-white rounded-lg font-bold text-sm cursor-pointer transition-colors shadow-sm disabled:bg-[#7B7068] disabled:cursor-not-allowed flex items-center gap-2"
+                      >
+                        <Send className="w-4 h-4" />
+                        {isSubmitting ? 'Submitting...' : 'Sign Up to Test'}
+                      </button>
+                      <p className="text-xs text-[#7B7068] max-w-sm leading-normal">
+                        Thank you for helping us grow! We will reach out with testing instructions as soon as they are ready.
+                      </p>
+                    </div>
+                  </form>
+
+                  {/* App descriptions requested below the signup form */}
+                  <div className="mt-10 pt-8 border-t border-[#F4EFE6] space-y-6">
+                    <div className="border-b border-[#F4EFE6] pb-3">
+                      <h3 className="font-serif text-lg font-bold text-[#2D241E]">Our Upcoming Apps</h3>
+                      <p className="text-xs text-[#7B7068] mt-0.5">Learn more about the amazing tools we are building:</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      
+                      {/* Character Bible */}
+                      <div className="bg-[#FDFBF7] p-5 rounded-xl border border-[#F4EFE6] hover:border-sage/40 transition-all shadow-2xs">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-lg">📖</span>
+                          <h4 className="font-serif font-black text-espresso text-sm tracking-tight">Character Bible</h4>
+                        </div>
+                        <p className="text-xs text-[#7B7068] leading-relaxed">
+                          Formulate all of the characters for your next story: including Character Name, back story, personality and more with the smartest Ai assistance.
+                        </p>
+                      </div>
+
+                      {/* Coloring Book Launchpad */}
+                      <div className="bg-[#FDFBF7] p-5 rounded-xl border border-[#F4EFE6] hover:border-sage/40 transition-all shadow-2xs">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-lg">🎨</span>
+                          <h4 className="font-serif font-black text-espresso text-sm tracking-tight">Coloring book Launchpad</h4>
+                        </div>
+                        <p className="text-xs text-[#7B7068] leading-relaxed">
+                          Take your coloring book from start to finish, KDP ready, Cover to cover. Including creating all of the interior pages and the coloring pages with or without Ai assistance.
+                        </p>
+                      </div>
+
+                      {/* Cookbook creator Toolkit */}
+                      <div className="bg-[#FDFBF7] p-5 rounded-xl border border-[#F4EFE6] hover:border-sage/40 transition-all shadow-2xs">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-lg">🍳</span>
+                          <h4 className="font-serif font-black text-espresso text-sm tracking-tight">Cookbook creator Toolkit</h4>
+                        </div>
+                        <p className="text-xs text-[#7B7068] leading-relaxed">
+                          Take your cookbook from start to finish, KDP ready, Cover to cover. Including creating all of the interior pages and the recipes. Get help from our Sous Chef Ai assistance.
+                        </p>
+                      </div>
+
+                      {/* KDP . Studio */}
+                      <div className="bg-[#FDFBF7] p-5 rounded-xl border border-[#F4EFE6] hover:border-sage/40 transition-all shadow-2xs">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-lg">💻</span>
+                          <h4 className="font-serif font-black text-espresso text-sm tracking-tight">KDP . Studio</h4>
+                        </div>
+                        <p className="text-xs text-[#7B7068] leading-relaxed">
+                          Create any type of book you can think of (KDP Ready): Journals, story books, puzzle books and so much more simple, instant ready pages, templates made for you, quick and easy to use. Ai assistance is available.
+                        </p>
+                      </div>
+
+                    </div>
+                  </div>
                 </div>
               )}
 

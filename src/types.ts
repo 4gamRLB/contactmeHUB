@@ -1,4 +1,11 @@
-export type ActiveTab = 'assistant' | 'app' | 'books' | 'feedback' | 'suggest' | 'collab' | 'faq' | 'admin';
+export type ActiveTab = 'assistant' | 'app' | 'books' | 'feedback' | 'suggest' | 'collab' | 'faq' | 'admin' | 'tester';
+
+export interface TesterForm {
+  name: string;
+  email: string;
+  appInterest: string;
+  comments: string;
+}
 
 export interface AppIssueForm {
   name: string;

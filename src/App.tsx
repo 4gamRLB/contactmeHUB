@@ -108,7 +108,7 @@ export default function App() {
     name: '', email: '', website: '', inquiryType: '', proposal: '', audienceSize: ''
   }));
   const [testerForm, setTesterForm] = useState(() => getDraft('tester', {
-    name: '', email: '', appInterest: '', comments: ''
+    name: '', email: '', appInterest: '', duration: '', comments: ''
   }));
 
   // Track draft load badges
@@ -251,7 +251,16 @@ export default function App() {
             <p className="text-xs uppercase tracking-widest text-espresso-light mt-1 font-bold">Contact Hub & Reader Concierge</p>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center flex-wrap justify-center sm:justify-end gap-3">
+            <a 
+              href="https://www.rlbdesigns.com/review" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200/80 hover:bg-amber-100 px-3 py-1.5 rounded-full flex items-center gap-1.5 transition-all shadow-2xs"
+            >
+              <span>⭐</span> Leave a Review <ExternalLink className="w-3 h-3 text-amber-600 shrink-0" />
+            </a>
+            <span className="text-linen hidden sm:inline">|</span>
             <a href="https://www.rlbdesigns.com" target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-sage hover:underline flex items-center gap-1">
               rlbdesigns.com <ExternalLink className="w-3 h-3" />
             </a>
@@ -340,6 +349,26 @@ export default function App() {
               </a>
             </div>
 
+            {/* Leave a Review / Say Hi Card */}
+            <div className="border border-amber-200/90 p-5 rounded-lg bg-amber-50/70 relative overflow-hidden shadow-sm">
+              <div className="absolute -top-2 -right-2 text-amber-300/20 text-5xl select-none pointer-events-none">⭐</div>
+              <h3 className="font-serif text-sm font-bold text-espresso mb-1 flex items-center gap-1.5">
+                <span>⭐</span> Leave a Review or Say Hi!
+              </h3>
+              <p className="text-[11px] text-[#7B7068] leading-relaxed mb-3">
+                Loved a book, enjoyed an app, or just want to stop by? We'd love to hear from you!
+              </p>
+              <a 
+                href="https://www.rlbdesigns.com/review"
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-xs"
+              >
+                <span>Write a Review</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
+
             {/* DIRECTORY NAVIGATION: DESKTOP INDEX (Table of Contents Style) */}
             {!successData?.show && (
               <div className="border border-linen rounded-lg bg-cream/30 p-4 lg:block hidden shadow-xs">
@@ -356,12 +385,20 @@ export default function App() {
                     { id: 'suggest', label: 'Suggest an Idea', icon: '💡' },
                     { id: 'collab', label: 'Work Together', icon: '🤝' },
                     { id: 'faq', label: 'Browse Quick Answers', icon: '❓' },
+                    { id: 'review', label: 'Leave a Review ⭐', icon: '⭐', isExternal: true, url: 'https://www.rlbdesigns.com/review' },
                   ].map((tab) => {
                     const isActive = activeTab === tab.id;
                     return (
                       <button
                         key={tab.id}
-                        onClick={() => { setActiveTab(tab.id as ActiveTab); setOpenFaqId(null); }}
+                        onClick={() => {
+                          if (tab.isExternal && tab.url) {
+                            window.open(tab.url, '_blank', 'noopener,noreferrer');
+                          } else {
+                            setActiveTab(tab.id as ActiveTab);
+                            setOpenFaqId(null);
+                          }
+                        }}
                         className={`w-full py-2.5 px-3.5 rounded text-left text-xs font-bold transition-all cursor-pointer flex items-center justify-between border ${
                           isActive
                             ? 'bg-[#e6dbc6] border-[#d8cdb8] text-espresso shadow-xs'
@@ -371,6 +408,7 @@ export default function App() {
                         <div className="flex items-center gap-2.5">
                           <span className="text-sm shrink-0">{tab.icon}</span>
                           <span>{tab.label}</span>
+                          {tab.isExternal && <ExternalLink className="w-3 h-3 text-espresso-light/60 ml-0.5 inline shrink-0" />}
                         </div>
                         {isActive && <div className="h-1.5 w-1.5 rounded-full bg-sage" />}
                       </button>
@@ -404,12 +442,20 @@ export default function App() {
                     { id: 'suggest', label: 'Suggest Idea', icon: '💡' },
                     { id: 'collab', label: 'Collab', icon: '🤝' },
                     { id: 'faq', label: 'FAQ Answers', icon: '❓' },
+                    { id: 'review', label: 'Review', icon: '⭐', isExternal: true, url: 'https://www.rlbdesigns.com/review' },
                   ].map((tab) => {
                     const isActive = activeTab === tab.id;
                     return (
                       <button
                         key={tab.id}
-                        onClick={() => { setActiveTab(tab.id as ActiveTab); setOpenFaqId(null); }}
+                        onClick={() => {
+                          if (tab.isExternal && tab.url) {
+                            window.open(tab.url, '_blank', 'noopener,noreferrer');
+                          } else {
+                            setActiveTab(tab.id as ActiveTab);
+                            setOpenFaqId(null);
+                          }
+                        }}
                         className={`flex-1 min-w-[95px] py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer text-center flex items-center justify-center gap-1.5 whitespace-nowrap ${
                           isActive
                             ? 'bg-[#e6dbc6] text-espresso shadow-xs border border-[#d8cdb8]'
@@ -418,6 +464,7 @@ export default function App() {
                       >
                         <span>{tab.icon}</span>
                         <span>{tab.label}</span>
+                        {tab.isExternal && <ExternalLink className="w-3 h-3 text-espresso-light/60 inline shrink-0" />}
                       </button>
                     );
                   })}
@@ -1296,7 +1343,7 @@ export default function App() {
                   <form onSubmit={(e) => {
                     e.preventDefault();
                     submitToGoogleSheets(testerForm, 'App Tester Sign-up', testerForm.email, () => {
-                      clearDraft('tester', { name: '', email: '', appInterest: '', comments: '' }, setTesterForm);
+                      clearDraft('tester', { name: '', email: '', appInterest: '', duration: '', comments: '' }, setTesterForm);
                     });
                   }} className="space-y-5">
                     
@@ -1309,7 +1356,7 @@ export default function App() {
                           value={testerForm.name}
                           onChange={(e) => setTesterForm({ ...testerForm, name: e.target.value })}
                           placeholder="Your full name"
-                          className="px-4 py-2 rounded-lg border border-[#F4EFE6] focus:border-sage focus:outline-none text-sm bg-white text-[#2D241E]"
+                          className="px-4 py-2.5 rounded-lg border border-[#F4EFE6] focus:border-sage focus:outline-none text-sm bg-white text-[#2D241E]"
                         />
                       </div>
                       <div className="flex flex-col gap-1.5">
@@ -1320,26 +1367,43 @@ export default function App() {
                           value={testerForm.email}
                           onChange={(e) => setTesterForm({ ...testerForm, email: e.target.value })}
                           placeholder="your.email@example.com"
-                          className="px-4 py-2 rounded-lg border border-[#F4EFE6] focus:border-sage focus:outline-none text-sm bg-white text-[#2D241E]"
+                          className="px-4 py-2.5 rounded-lg border border-[#F4EFE6] focus:border-sage focus:outline-none text-sm bg-white text-[#2D241E]"
                         />
                       </div>
                     </div>
 
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-bold text-[#7B7068] uppercase tracking-wider">Select the App you want to test <span className="text-blush">*</span></label>
-                      <select
-                        required
-                        value={testerForm.appInterest}
-                        onChange={(e) => setTesterForm({ ...testerForm, appInterest: e.target.value })}
-                        className="px-4 py-2 rounded-lg border border-[#F4EFE6] focus:border-sage focus:outline-none text-sm bg-white text-[#2D241E]"
-                      >
-                        <option value="">— Select an App to Test —</option>
-                        <option value="Character Bible">Character Bible</option>
-                        <option value="Coloring Book Launchpad">Coloring Book Launchpad</option>
-                        <option value="Cookbook creator Toolkit">Cookbook creator Toolkit</option>
-                        <option value="KDP . Studio">KDP . Studio</option>
-                        <option value="All of the above">All of the above</option>
-                      </select>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-bold text-[#7B7068] uppercase tracking-wider">Select the App you want to test <span className="text-blush">*</span></label>
+                        <select
+                          required
+                          value={testerForm.appInterest}
+                          onChange={(e) => setTesterForm({ ...testerForm, appInterest: e.target.value })}
+                          className="px-4 py-2.5 rounded-lg border border-[#F4EFE6] focus:border-sage focus:outline-none text-sm bg-white text-[#2D241E]"
+                        >
+                          <option value="">— Select an App to Test —</option>
+                          <option value="Character Bible">Character Bible</option>
+                          <option value="Coloring Book Launchpad">Coloring Book Launchpad</option>
+                          <option value="Cookbook creator Toolkit">Cookbook creator Toolkit</option>
+                          <option value="KDP . Studio">KDP . Studio</option>
+                          <option value="All of the above">All of the above</option>
+                        </select>
+                      </div>
+
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-bold text-[#7B7068] uppercase tracking-wider">Testing Duration <span className="text-blush">*</span></label>
+                        <select
+                          required
+                          value={testerForm.duration || ''}
+                          onChange={(e) => setTesterForm({ ...testerForm, duration: e.target.value })}
+                          className="px-4 py-2.5 rounded-lg border border-[#F4EFE6] focus:border-sage focus:outline-none text-sm bg-white text-[#2D241E]"
+                        >
+                          <option value="">— How long can you test? —</option>
+                          <option value="1 week">1 week</option>
+                          <option value="2 weeks">2 weeks</option>
+                          <option value="4 weeks">4 weeks</option>
+                        </select>
+                      </div>
                     </div>
 
                     <div className="flex flex-col gap-1.5">

@@ -4,6 +4,7 @@ export interface TesterForm {
   name: string;
   email: string;
   appInterest: string;
+  duration: string;
   comments: string;
 }
 

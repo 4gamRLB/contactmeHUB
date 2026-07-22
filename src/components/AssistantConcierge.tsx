@@ -150,6 +150,25 @@ export default function AssistantConcierge({ onSwitchTab }: AssistantConciergePr
           </span>
         </button>
 
+        {/* LEAVE A REVIEW / SAY HI */}
+        <a
+          href="https://www.rlbdesigns.com/review"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group text-left p-5 bg-[#FDFBF7] hover:bg-sage-light border border-[#F4EFE6] hover:border-sage rounded-xl transition-all duration-300 hover:shadow-md cursor-pointer flex flex-col justify-between min-h-[140px]"
+        >
+          <div>
+            <div className="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center mb-3 group-hover:bg-sage group-hover:text-white transition-colors">
+              <span className="text-xl">⭐</span>
+            </div>
+            <h5 className="font-serif font-bold text-base text-[#2D241E] group-hover:text-sage-dark transition-colors mb-1">Leave a Review or Say Hi</h5>
+            <p className="text-xs text-[#7B7068] leading-relaxed">Leave a review on a book, an app, or just stop by to say hello!</p>
+          </div>
+          <span className="text-xs font-bold text-sage-dark flex items-center gap-1 mt-3 group-hover:translate-x-1 transition-transform">
+            Visit Review Page <ArrowRight className="w-3 h-3" />
+          </span>
+        </a>
+
         {/* FAQ ACCORDION */}
         <button
           onClick={() => onSwitchTab('faq')}
